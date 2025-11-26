@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PhotoData } from '../types';
 import { Download, ExternalLink, Eye, Calendar, Maximize2, Loader2, Link as LinkIcon } from 'lucide-react';
 
@@ -9,12 +9,36 @@ interface PhotoCardProps {
 
 export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, index }) => {
   const [isDownloading, setIsDownloading] = useState(false);
+  
+  // Image Loading State
+  // Prioritize 2000px version, fallback to max
+  const [imgSrc, setImgSrc] = useState<string>(photo.url_max_2000 || photo.url_max);
+  const [isVisible, setIsVisible] = useState<boolean>(true);
+
+  // Reset state when photo prop changes
+  useEffect(() => {
+    setImgSrc(photo.url_max_2000 || photo.url_max);
+    setIsVisible(true);
+  }, [photo]);
+
+  const handleImageError = () => {
+    // If we are currently trying url_max_2000, and url_max exists and is different
+    if (imgSrc === photo.url_max_2000 && photo.url_max && photo.url_max !== photo.url_max_2000) {
+      console.warn(`Failed to load high-res image for ${photo.id}, falling back to standard resolution.`);
+      setImgSrc(photo.url_max);
+    } else {
+      // Otherwise (failed on fallback, or only one url existed, or urls were same), hide the card
+      console.error(`Failed to load image for ${photo.id}. Hiding card.`);
+      setIsVisible(false);
+    }
+  };
 
   const handleDownload = async (e: React.MouseEvent) => {
     e.preventDefault();
     setIsDownloading(true);
     try {
-      const response = await fetch(photo.url_max);
+      // Download the currently visible image or fall back to url_max
+      const response = await fetch(imgSrc || photo.url_max);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -39,15 +63,18 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, index }) => {
     window.open(photo.url_max, '_blank');
   };
 
+  if (!isVisible) return null;
+
   return (
     <div className="bg-white dark:bg-gray-850 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col border border-gray-100 dark:border-gray-800 break-inside-avoid mb-4">
       {/* Image Container - Natural Aspect Ratio */}
       <div className="relative group w-full">
         <img
-          src={photo.url_max_2000}
+          src={imgSrc}
           alt={photo.title || photo.id}
           className="w-full h-auto block"
           loading="lazy"
+          onError={handleImageError}
         />
         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300 pointer-events-none" />
         
