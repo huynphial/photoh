@@ -4,7 +4,7 @@ import { PhotoData, GalleryConfigItem } from '../types';
 import { fetchGalleryData, fetchGalleryConfig } from '../services/galleryService';
 import { PhotoCard } from '../components/PhotoCard';
 import { Pagination } from '../components/Pagination';
-import { Loader2, AlertCircle, ArrowLeft, Grid3X3, Minus, Plus } from 'lucide-react';
+import { Loader2, AlertCircle, ArrowLeft, Grid3X3, Minus, Plus, ChevronDown, ChevronsDown, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const Gallery: React.FC = () => {
   const { folder, page } = useParams<{ folder: string; page: string }>();
@@ -28,7 +28,6 @@ export const Gallery: React.FC = () => {
         else setColumnCount(4);
     };
     
-    // Set initial only if user hasn't touched it (conceptually, simpler here just to init once)
     updateDefaultColumns();
   }, []);
 
@@ -74,8 +73,42 @@ export const Gallery: React.FC = () => {
     navigate('/');
   };
 
+  // --- Floating Actions ---
+  const handleScrollBottom = () => {
+    window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth'
+    });
+  };
+
+  const handleScroll20Pics = () => {
+      // Approximate height of 20 pictures based on columns. 
+      // Assuming avg card height ~400px (including margin). 
+      // Rows to scroll = 20 / columnCount.
+      const estimatedRowHeight = 400;
+      const rowsToScroll = 20 / columnCount;
+      const scrollAmount = rowsToScroll * estimatedRowHeight;
+      
+      window.scrollBy({
+          top: scrollAmount,
+          behavior: 'smooth'
+      });
+  };
+
+  const handleNextPage = () => {
+      if (galleryInfo && currentPage < galleryInfo.totalPages) {
+          handlePageChange(currentPage + 1);
+      }
+  };
+
+  const handlePrevPage = () => {
+      if (currentPage > 1) {
+          handlePageChange(currentPage - 1);
+      }
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8 min-h-screen flex flex-col">
+    <div className="container mx-auto px-4 py-8 min-h-screen flex flex-col relative">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
         <div>
@@ -174,8 +207,8 @@ export const Gallery: React.FC = () => {
             className="w-full gap-4 transition-all duration-500"
             style={{ columnCount: columnCount }}
           >
-            {photos.map((photo) => (
-              <PhotoCard key={photo.id} photo={photo} />
+            {photos.map((photo, index) => (
+              <PhotoCard key={photo.id} photo={photo} index={index + 1} />
             ))}
           </div>
 
@@ -187,6 +220,49 @@ export const Gallery: React.FC = () => {
                 onPageChange={handlePageChange} 
                 />
              )}
+          </div>
+
+          {/* Floating Controls (Bottom Right) */}
+          <div className="fixed bottom-6 right-6 flex flex-col gap-2 z-40 print:hidden">
+            {/* Navigation Group */}
+             <div className="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button 
+                    onClick={handlePrevPage}
+                    disabled={currentPage <= 1}
+                    className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    title="Previous Page"
+                >
+                    <ChevronLeft size={20} />
+                </button>
+                <div className="h-[1px] bg-gray-200 dark:bg-gray-700 w-full" />
+                <button 
+                    onClick={handleNextPage}
+                    disabled={!galleryInfo || currentPage >= galleryInfo.totalPages}
+                    className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    title="Next Page"
+                >
+                    <ChevronRight size={20} />
+                </button>
+             </div>
+
+             {/* Scroll Group */}
+             <div className="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden mt-2">
+                <button 
+                    onClick={handleScroll20Pics}
+                    className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 transition-colors"
+                    title="Scroll down ~20 pics"
+                >
+                    <ChevronDown size={20} />
+                </button>
+                <div className="h-[1px] bg-gray-200 dark:bg-gray-700 w-full" />
+                <button 
+                    onClick={handleScrollBottom}
+                    className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 transition-colors"
+                    title="Scroll to Bottom"
+                >
+                    <ChevronsDown size={20} />
+                </button>
+             </div>
           </div>
         </>
       )}

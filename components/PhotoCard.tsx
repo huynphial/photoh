@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { PhotoData } from '../types';
-import { Download, ExternalLink, Eye, Calendar, Maximize2, Loader2 } from 'lucide-react';
+import { Download, ExternalLink, Eye, Calendar, Maximize2, Loader2, Link as LinkIcon } from 'lucide-react';
 
 interface PhotoCardProps {
   photo: PhotoData;
+  index: number;
 }
 
-export const PhotoCard: React.FC<PhotoCardProps> = ({ photo }) => {
+export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, index }) => {
   const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDownload = async (e: React.MouseEvent) => {
@@ -32,6 +33,10 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo }) => {
     } finally {
       setIsDownloading(false);
     }
+  };
+
+  const handleOpenOriginal = () => {
+    window.open(photo.url_max, '_blank');
   };
 
   return (
@@ -64,6 +69,7 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo }) => {
       <div className="p-4 flex flex-col gap-3">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 leading-tight mb-1" title={photo.title || 'Untitled'}>
+            <span className="text-blue-600 dark:text-blue-400 mr-2">#{index}</span>
             {photo.title || 'Untitled'}
           </h3>
           <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -87,14 +93,26 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo }) => {
           </div>
         </div>
 
-        <button
-          onClick={handleDownload}
-          disabled={isDownloading}
-          className="w-full flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-700 hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white dark:hover:text-white text-gray-700 dark:text-gray-200 text-sm py-2 px-3 rounded transition-all duration-200"
-        >
-          {isDownloading ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
-          <span>{isDownloading ? 'Downloading...' : 'Download Original'}</span>
-        </button>
+        {/* Actions */}
+        <div className="flex gap-2 mt-1">
+            <button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            className="flex-1 flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-700 hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white dark:hover:text-white text-gray-700 dark:text-gray-200 text-sm py-2 px-3 rounded transition-all duration-200"
+            title="Download Image"
+            >
+            {isDownloading ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+            <span>Download</span>
+            </button>
+
+            <button
+            onClick={handleOpenOriginal}
+            className="flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 text-sm py-2 px-3 rounded transition-all duration-200"
+            title="Open Original Link"
+            >
+            <LinkIcon size={16} />
+            </button>
+        </div>
       </div>
     </div>
   );

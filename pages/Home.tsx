@@ -72,7 +72,7 @@ export const Home: React.FC = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {galleries.map((gallery) => (
+          {galleries.map((gallery, index) => (
             <Link
               key={gallery.id}
               to={`/gallery/${gallery.folderName}/1`}
@@ -94,6 +94,7 @@ export const Home: React.FC = () => {
                 
                 <div className="absolute bottom-0 left-0 right-0 p-6">
                   <h2 className="text-2xl font-bold text-white mb-1 group-hover:text-blue-300 transition-colors">
+                    <span className="text-blue-400 mr-2">#{index + 1}</span>
                     {gallery.name}
                   </h2>
                   <div className="flex items-center text-gray-300 text-sm font-medium">
