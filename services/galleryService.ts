@@ -1,5 +1,5 @@
 import { PhotoData, GalleryConfig } from '../types';
-import { CONFIG_PATH } from '../constants';
+import { CONFIG_PATH, DATA_BASE_URL } from '../constants';
 
 export const fetchGalleryConfig = async (): Promise<GalleryConfig> => {
   try {
@@ -18,9 +18,9 @@ export const fetchGalleryConfig = async (): Promise<GalleryConfig> => {
 
 export const fetchGalleryData = async (folderName: string, page: number): Promise<PhotoData[]> => {
   try {
-    // Construct relative path: data/<folderName>/<page>.json
-    // Removing the leading slash ensures it works if the app is hosted in a subdirectory.
-    const path = `data/${folderName}/${page}.json`;
+    // Construct path using the remote base URL
+    // Format: https://huynphial.github.io/photohrepo/data/<folderName>/<page>.json
+    const path = `${DATA_BASE_URL}/${folderName}/${page}.json`;
     
     const response = await fetch(path);
     
