@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PhotoData } from '../types';
-import { Download, ExternalLink, Eye, Calendar, Maximize2, Loader2, Link as LinkIcon } from 'lucide-react';
+import { Download, ExternalLink, Eye, Calendar, Maximize2, Loader2, Link as LinkIcon, Save } from 'lucide-react';
+import { SAVE_API_URL } from '../constants';
 
 interface PhotoCardProps {
   photo: PhotoData;
@@ -9,6 +10,7 @@ interface PhotoCardProps {
 
 export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, index }) => {
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   
   // Image Loading State
   // Prioritize 2000px version, fallback to max
@@ -59,6 +61,32 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, index }) => {
 
   const handleOpenOriginal = () => {
     window.open(photo.url_max, '_blank');
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const response = await fetch(SAVE_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(photo)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const result = await response.text();
+      console.log('Save result:', result);
+      alert('Photo info saved successfully!');
+    } catch (error) {
+      console.error('Failed to save photo:', error);
+      alert('Failed to save photo info.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   if (!isVisible) return null;
@@ -136,6 +164,15 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, index }) => {
             title="Open Original Link"
             >
             <LinkIcon size={16} />
+            </button>
+
+            <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-700 hover:bg-green-600 dark:hover:bg-green-600 hover:text-white dark:hover:text-white text-gray-700 dark:text-gray-200 text-sm py-2 px-3 rounded transition-all duration-200"
+            title="Save Info"
+            >
+            {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
             </button>
         </div>
       </div>
