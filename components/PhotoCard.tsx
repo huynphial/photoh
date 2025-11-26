@@ -24,11 +24,10 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, index }) => {
   const handleImageError = () => {
     // If we are currently trying url_max_2000, and url_max exists and is different
     if (imgSrc === photo.url_max_2000 && photo.url_max && photo.url_max !== photo.url_max_2000) {
-      console.warn(`Failed to load high-res image for ${photo.id}, falling back to standard resolution.`);
+      // Silently fall back
       setImgSrc(photo.url_max);
     } else {
-      // Otherwise (failed on fallback, or only one url existed, or urls were same), hide the card
-      console.error(`Failed to load image for ${photo.id}. Hiding card.`);
+      // Otherwise (failed on fallback, or only one url existed, or urls were same), hide the card silently
       setIsVisible(false);
     }
   };
@@ -51,7 +50,6 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, index }) => {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Download failed, falling back to open new tab", error);
       // Fallback: just open the link if CORS prevents blob fetching
       window.open(photo.url_max, '_blank');
     } finally {
