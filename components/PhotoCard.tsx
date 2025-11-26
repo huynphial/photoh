@@ -80,10 +80,10 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, index }) => {
 
       const result = await response.text();
       console.log('Save result:', result);
-      alert('Photo info saved successfully!');
+      // Silent success
     } catch (error) {
       console.error('Failed to save photo:', error);
-      alert('Failed to save photo info.');
+      // Silent failure (logged to console)
     } finally {
       setIsSaving(false);
     }
