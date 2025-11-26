@@ -1,25 +1,18 @@
 {
   "galleries": [
     {
-      "id": "sample-gallery",
-      "name": "Sample Photography",
-      "folderName": "sample1",
-      "totalPages": 2,
-      "showCover": true
-    },
-    {
       "id": "30407749@N08",
-      "name": "Sample Photography",
+      "name": "TalentNguyen",
       "folderName": "30407749@N08",
       "totalPages": 18,
-      "showCover": false
+      "showCover": true
     },
     {
       "id": "38042432@N03",
       "name": "user0146",
       "folderName": "38042432@N03",
       "totalPages": 1,
-      "showCover": false
+      "showCover": true
     },
     {
       "id": "135356423@N08",
@@ -40,35 +33,42 @@
       "name": "Flora 秘密花園",
       "folderName": "190173596@N07",
       "totalPages": 9,
-      "showCover": false
+      "showCover": true
     },
     {
       "id": "darkness_angel",
       "name": "DARKNESS ANGEL",
       "folderName": "darkness_angel",
       "totalPages": 10,
-      "showCover": false
+      "showCover": true
     },
     {
       "id": "emeraldas",
       "name": "HEE KUNN",
       "folderName": "emeraldas",
       "totalPages": 67,
-      "showCover": false
+      "showCover": true
     },
     {
       "id": "etiennebourgeois",
       "name": "Leblanc Fotos Saigon",
       "folderName": "etiennebourgeois",
       "totalPages": 43,
-      "showCover": false
+      "showCover": true
     },
     {
       "id": "teck_yau",
       "name": "Ng Steve",
       "folderName": "teck_yau",
       "totalPages": 62,
-      "showCover": false
+      "showCover": true
+    },
+    {
+      "id": "sample-gallery",
+      "name": "Sample Photography",
+      "folderName": "sample1",
+      "totalPages": 2,
+      "showCover": true
     }
   ]
 }
