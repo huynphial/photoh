@@ -4,7 +4,8 @@
       "id": "sample-gallery",
       "name": "Sample Photography",
       "folderName": "sample1",
-      "totalPages": 2
+      "totalPages": 2,
+      "showCover": true
     }
   ]
 }

@@ -20,6 +20,7 @@ export interface GalleryConfigItem {
   name: string;
   folderName: string;
   totalPages: number;
+  showCover?: boolean;
 }
 
 export interface GalleryConfig {
