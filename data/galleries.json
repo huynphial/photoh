@@ -1,0 +1,10 @@
+{
+  "galleries": [
+    {
+      "id": "sample-gallery",
+      "name": "Sample Photography",
+      "folderName": "sample1",
+      "totalPages": 1
+    }
+  ]
+}
