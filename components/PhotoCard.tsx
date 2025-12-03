@@ -159,20 +159,20 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, index }) => {
             </button>
 
             <button
-            onClick={handleOpenOriginal}
-            className="flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 text-sm py-2 px-3 rounded transition-all duration-200"
-            title="Open Original Link"
-            >
-            <LinkIcon size={16} />
-            </button>
-
-            <button
             onClick={handleSave}
             disabled={isSaving}
             className="flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-700 hover:bg-green-600 dark:hover:bg-green-600 hover:text-white dark:hover:text-white text-gray-700 dark:text-gray-200 text-sm py-2 px-3 rounded transition-all duration-200"
             title="Save Info"
             >
             {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+            </button>
+
+            <button
+            onClick={handleOpenOriginal}
+            className="flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 text-sm py-2 px-3 rounded transition-all duration-200"
+            title="Open Original Link"
+            >
+            <LinkIcon size={16} />
             </button>
         </div>
       </div>

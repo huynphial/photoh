@@ -81,12 +81,12 @@ export const Gallery: React.FC = () => {
     });
   };
 
-  const handleScroll20Pics = () => {
-      // Approximate height of 20 pictures based on columns. 
+  const handleScroll10Pics = () => {
+      // Approximate height of 10 pictures based on columns. 
       // Assuming avg card height ~400px (including margin). 
-      // Rows to scroll = 20 / columnCount.
+      // Rows to scroll = 10 / columnCount.
       const estimatedRowHeight = 400;
-      const rowsToScroll = 20 / columnCount;
+      const rowsToScroll = 10 / columnCount;
       const scrollAmount = rowsToScroll * estimatedRowHeight;
       
       window.scrollBy({
@@ -248,9 +248,9 @@ export const Gallery: React.FC = () => {
              {/* Scroll Group */}
              <div className="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden mt-2">
                 <button 
-                    onClick={handleScroll20Pics}
+                    onClick={handleScroll10Pics}
                     className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 transition-colors"
-                    title="Scroll down ~20 pics"
+                    title="Scroll down ~10 pics"
                 >
                     <ChevronDown size={20} />
                 </button>
