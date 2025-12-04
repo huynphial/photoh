@@ -12,22 +12,33 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, index }) => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   
+  // Helper to remove query params from URL (e.g. ?v=123)
+  const cleanUrl = (url: string | undefined): string => {
+    if (!url) return '';
+    return url.split('?')[0];
+  };
+
+  const urlMax = cleanUrl(photo.url_max);
+  const urlMax2000 = cleanUrl(photo.url_max_2000);
+
   // Image Loading State
   // Prioritize 2000px version, fallback to max
-  const [imgSrc, setImgSrc] = useState<string>(photo.url_max_2000 || photo.url_max);
+  const [imgSrc, setImgSrc] = useState<string>(urlMax2000 || urlMax);
   const [isVisible, setIsVisible] = useState<boolean>(true);
 
   // Reset state when photo prop changes
   useEffect(() => {
-    setImgSrc(photo.url_max_2000 || photo.url_max);
+    const cleanMax = cleanUrl(photo.url_max);
+    const cleanMax2000 = cleanUrl(photo.url_max_2000);
+    setImgSrc(cleanMax2000 || cleanMax);
     setIsVisible(true);
   }, [photo]);
 
   const handleImageError = () => {
     // If we are currently trying url_max_2000, and url_max exists and is different
-    if (imgSrc === photo.url_max_2000 && photo.url_max && photo.url_max !== photo.url_max_2000) {
+    if (imgSrc === urlMax2000 && urlMax && urlMax !== urlMax2000) {
       // Silently fall back
-      setImgSrc(photo.url_max);
+      setImgSrc(urlMax);
     } else {
       // Otherwise (failed on fallback, or only one url existed, or urls were same), hide the card silently
       setIsVisible(false);
@@ -38,8 +49,8 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, index }) => {
     e.preventDefault();
     setIsDownloading(true);
     try {
-      // Always download url_max as requested
-      const response = await fetch(photo.url_max);
+      // Always download url_max as requested, ensure clean URL
+      const response = await fetch(urlMax);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -63,14 +74,14 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, index }) => {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       // Fallback: just open the link if CORS prevents blob fetching
-      window.open(photo.url_max, '_blank');
+      window.open(urlMax, '_blank');
     } finally {
       setIsDownloading(false);
     }
   };
 
   const handleOpenOriginal = () => {
-    window.open(photo.url_max, '_blank');
+    window.open(urlMax, '_blank');
   };
 
   const handleSave = async () => {
@@ -102,7 +113,7 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, index }) => {
   if (!isVisible) return null;
 
   return (
-    <div className="bg-white dark:bg-gray-850 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col border border-gray-100 dark:border-gray-800 break-inside-avoid mb-4">
+    <div className="bg-white dark:bg-gray-850 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col border border-gray-100 dark:border-gray-800 mb-4 h-fit w-full">
       {/* Image Container - Natural Aspect Ratio */}
       <div className="relative group w-full">
         <img

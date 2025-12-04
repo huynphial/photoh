@@ -107,6 +107,16 @@ export const Gallery: React.FC = () => {
       }
   };
 
+  // Distribute photos into columns for visual "Left to Right" ordering in masonry
+  // Col 1: Item 0, Item 4, Item 8...
+  // Col 2: Item 1, Item 5, Item 9...
+  const columns = Array.from({ length: columnCount }, () => [] as { photo: PhotoData; index: number }[]);
+  if (photos.length > 0) {
+    photos.forEach((photo, index) => {
+        columns[index % columnCount].push({ photo, index });
+    });
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 min-h-screen flex flex-col relative">
       {/* Header */}
@@ -200,15 +210,16 @@ export const Gallery: React.FC = () => {
         </div>
       )}
 
-      {/* Gallery Grid (Masonry using CSS Columns) */}
+      {/* Gallery Grid (JS Distributed Columns for LTR flow) */}
       {!loading && !error && photos.length > 0 && (
         <>
-          <div 
-            className="w-full gap-4 transition-all duration-500"
-            style={{ columnCount: columnCount }}
-          >
-            {photos.map((photo, index) => (
-              <PhotoCard key={photo.id} photo={photo} index={index + 1} />
+          <div className="flex gap-4 items-start justify-center">
+            {columns.map((col, colIndex) => (
+                <div key={colIndex} className="flex-1 flex flex-col gap-4 min-w-0">
+                    {col.map(({ photo, index }) => (
+                         <PhotoCard key={photo.id} photo={photo} index={index + 1} />
+                    ))}
+                </div>
             ))}
           </div>
 
