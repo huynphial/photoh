@@ -38,14 +38,24 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, index }) => {
     e.preventDefault();
     setIsDownloading(true);
     try {
-      // Download the currently visible image or fall back to url_max
-      const response = await fetch(imgSrc || photo.url_max);
+      // Always download url_max as requested
+      const response = await fetch(photo.url_max);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      // Use title or ID for filename
-      const filename = photo.title ? `${photo.title}.jpg` : `${photo.id}.jpg`;
+      
+      // Format filename: [ownername][max_widthxmax_height][count_view] title.jpg
+      // Sanitize strings to remove characters invalid in filenames
+      const safeString = (str: string) => (str || '').replace(/[\\/:*?"<>|]/g, '_');
+      
+      const owner = safeString(photo.ownername || 'Unknown');
+      const resolution = `${photo.max_width}x${photo.max_height}`;
+      const views = photo.count_view || '0';
+      const title = safeString(photo.title || photo.id);
+      
+      const filename = `[${owner}][${resolution}][${views}] ${title}.jpg`;
+      
       link.download = filename; 
       document.body.appendChild(link);
       link.click();
